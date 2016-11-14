@@ -42,7 +42,7 @@ class FeedController extends Controller
    public function pullAll(request $request){
           $page=$request->input('page');
           $offset=$page*40;
-          $contents=app('db')->select("SELECT title,description,organization,date FROM themefeeds ORDER BY date DESC limit $offset,40");
+          $contents=app('db')->select("SELECT id,theme_id,title,description,organization,date FROM themefeeds ORDER BY date DESC limit $offset,40");
           if($contents){
              return StatusCode::JsonResponse(200,$contents);
         }else{
