@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Collections;
 use App\ThemeFeeds;
 use App\extensions\StatusCode;
+use App\traits\AuthUser;
 class FeedController extends Controller
 {
     /**
@@ -15,6 +16,7 @@ class FeedController extends Controller
      *
      * @return void
      */
+    use AuthUser;
     public function __construct()
     {
         //
@@ -27,7 +29,7 @@ class FeedController extends Controller
 
     // get new message, every time return 40
     public function pull(request $request){
-          $user_id=Auth::user()->id;
+          $user_id=$this->getCurrentUser($request)->id;
           // first time , page =0
           $page=$request->input('page');
           $offset=$page*40;
@@ -52,10 +54,11 @@ class FeedController extends Controller
 
    public function collect(Request $request){
        $feed_id=$request->input('feed_id');
+       $user_id=$this->getCurrentUser($request)->id;
        if(!ThemeFeeds::find($feed_id)){
            return StatusCode::JsonResponse(400);
        }
-       $collection=Collections::create(['user_id'=>Auth::user()->id,'feed_id'=>$request->input('feed_id')]);
+       $collection=Collections::create(['user_id'=>$user_id,'feed_id'=>$request->input('feed_id')]);
        if($collection){
           return StatusCode::JsonResponse(200);
        }else{
@@ -64,7 +67,7 @@ class FeedController extends Controller
     }
 
     public function cancelCollect(Request $request){
-          $user_id=Auth::user()->id;
+          $user_id=$this->getCurrentUser($request)->id;
           $feed_id=$request->input('feed_id');
           $collection=Collections::where('user_id',$user_id)->where('feed_id',$feed_id)->first();
           if($collection){
@@ -79,7 +82,7 @@ class FeedController extends Controller
     }
 
     public function getCollections(Request $request){
-      $user_id=Auth::user()->id;
+      $user_id=$this->getCurrentUser($request)->id;
       $contents=app('db')->select("SELECT title,description,organization,date FROM collections AS c INNER JOIN themefeeds AS t ON t.id=c.feed_id WHERE c.user_id=$user_id ORDER BY date DESC");
       if($contents){
             return StatusCode::JsonResponse(200,$contents);
@@ -100,5 +103,15 @@ class FeedController extends Controller
          }
     }
 
-
+    public function synCollections(Request $request){
+       $feeds=$request->input('feeds');
+       $user_id=$this->getCurrentUser($request)->id;
+       foreach ($feeds as $feed) {
+          $collection=Collections::create(['user_id'=>$user_id,'feed_id'=>$feed]);
+           if(!$collection){
+                  return StatusCode::JsonResponse(500);
+              }
+       }
+        return StatusCode::JsonResponse(200);     
+    } 
 }

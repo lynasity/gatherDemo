@@ -32,59 +32,66 @@ $app->post('register','UserController@register');
    info
  * arg1:api_token
  */
-$app->get('info',['middleware'=>'authToken','uses'=>'UserController@info']);
+$app->get('info',['middleware'=>'authTokenV2','uses'=>'UserController@info']);
 
 /**
    feedback
    arg1:api_token
  * arg2:feedback
  */
-$app->post('feedback',['middleware'=>'authToken','uses'=>'UserController@feedback']);
+$app->post('feedback',['middleware'=>'authTokenV2','uses'=>'UserController@feedback']);
 /**
    user/uploadImage
  * arg1:api_token
    arg2: the file you want to upload 
  */
-$app->get('user/uploadImage',['middleware'=>'authToken','uses'=>'UserController@uploadImage']);
+$app->get('user/uploadImage',['middleware'=>'authTokenV2','uses'=>'UserController@uploadImage']);
 
 /**
    user/getUserImage
  * arg1:api_token
  */
-$app->get('user/getUserImage',['middleware'=>'authToken','uses'=>'UserController@getUserImage']);
+$app->get('user/getUserImage',['middleware'=>'authTokenV2','uses'=>'UserController@getUserImage']);
 
 /**
    user/updateGender
  * arg1:api_token
    arg2:gender
  */
-$app->post('user/updateGender',['middleware'=>'authToken','uses'=>'UserController@updateGender']);
+$app->post('user/updateGender',['middleware'=>'authTokenV2','uses'=>'UserController@updateGender']);
 
 /**
    user/updateUsername
  * arg1:api_token
    arg2:username
  */
-$app->post('user/updateUsername',['middleware'=>'authToken','uses'=>'UserController@updateUsername']);
+$app->post('user/updateUsername',['middleware'=>'authTokenV2','uses'=>'UserController@updateUsername']);
 
 /**
    user/updateUsername
  * arg1:api_token
    arg2:email
  */
-$app->post('user/updateEmail',['middleware'=>'authToken','uses'=>'UserController@updateEmail']);
+$app->post('user/updateEmail',['middleware'=>'authTokenV2','uses'=>'UserController@updateEmail']);
 /**
    theme/subscribe
  * arg1:theme_id
    arg2:api_token
  */
-$app->post('theme/subscribe',['middleware'=>'authToken','uses'=>'ThemeController@subscribe']);
+$app->post('theme/subscribe',['middleware'=>'authTokenV2','uses'=>'ThemeController@subscribe']);
 
 /**
    theme/showAll
    arg1:api_token
  */
- $app->get('theme/allSubscribe',['middleware'=>'authToken','uses'=>'ThemeController@showAllSubscribe']);
+ $app->get('theme/allSubscribe',['middleware'=>'authTokenV2','uses'=>'ThemeController@showAllSubscribe']);
+/**
+   theme/synSubscribes
+   arg1:api_token
+   arg2:themes array of theme_id
+ */
+ $app->post('theme/synSubscribes',['middleware'=>'authTokenV2','uses'=>'ThemeController@synSubscribes']);
+ 
 /**
    theme/all
    arg1:api_token
@@ -95,14 +102,14 @@ $app->post('theme/subscribe',['middleware'=>'authToken','uses'=>'ThemeController
  * arg1:theme_id
    arg2:api_token
  */
-$app->post('theme/unSubscribe',['middleware'=>'authToken','uses'=>'ThemeController@unSubscribe']);
+$app->post('theme/unSubscribe',['middleware'=>'authTokenV2','uses'=>'ThemeController@unSubscribe']);
 
 /**
    message/pull
  * arg1:api_token
    arg2:page
  */
-$app->get('feed/pull',['middleware'=>'authToken','uses'=>'FeedController@pull']);
+$app->get('feed/pull',['middleware'=>'authTokenV2','uses'=>'FeedController@pull']);
 /**
    message/pullAll
    arg1:page
@@ -113,20 +120,26 @@ $app->get('feed/pullAll','FeedController@pullAll');
  * arg1:api_token
    arg2:feed_id
  */
-$app->post('feed/collect',['middleware'=>'authToken','uses'=>'FeedController@collect']);
+$app->post('feed/collect',['middleware'=>'authTokenV2','uses'=>'FeedController@collect']);
+/**
+   feed/synCollections
+ * arg1:api_token
+   arg2:feeds
+ */
+$app->post('feed/synCollections',['middleware'=>'authTokenV2','uses'=>'FeedController@synCollections']);
 
 /**
    feed/cancelCollect
  * arg1:api_token
    arg2:feed_id
  */
-$app->post('feed/cancelCollect',['middleware'=>'authToken','uses'=>'FeedController@cancelCollect']);
+$app->post('feed/cancelCollect',['middleware'=>'authTokenV2','uses'=>'FeedController@cancelCollect']);
 
 /**
    feed/getCollections
  *  arg1:api_token
  */
-$app->get('feed/getCollections',['middleware'=>'authToken','uses'=>'FeedController@getCollections']);
+$app->get('feed/getCollections',['middleware'=>'authTokenV2','uses'=>'FeedController@getCollections']);
 
 // /**
 //    pio/sendEvents
@@ -139,9 +152,11 @@ $app->get('feed/getCollections',['middleware'=>'authToken','uses'=>'FeedControll
  *  arg1:api_token
     arg2:the time of the latest message
  */
- $app->get('feed/getNewFeeds',['middleware'=>'authToken','uses'=>'FeedController@getNewFeeds']);  
+ $app->get('feed/getNewFeeds',['middleware'=>'authTokenV2','uses'=>'FeedController@getNewFeeds']);  
 /**
     gzh/Synchronize
  *  arg1:api_token
  */
  $app->get('gzh/Synchronize','GzhController@Synchronize');
+
+

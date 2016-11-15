@@ -6,8 +6,10 @@ use App\User;
 use App\UserFeedback;
 use Auth;
 use App\extensions\StatusCode;
+use App\traits\AuthUser;
 class UserController extends Controller
  {
+   use AuthUser;
    private $salt;
    public function __construct()
    {
@@ -47,8 +49,8 @@ class UserController extends Controller
      }   
  }
      
-     public function info(){
-           $user=Auth::user();
+     public function info(request $request){
+           $user=$this->getCurrentUser($request);
            if($user){
               return StatusCode::JsonResponse(200,$user);
            }else{
@@ -81,8 +83,8 @@ class UserController extends Controller
             
     }
 
-    public function getUserImage(){
-      $userId=Auth::user()->id;
+    public function getUserImage(request $request){
+      $userId=$this->getCurrentUser($request)->id;
       if(file_exists("./data/user/images/user$userId.png")){
         return response()->download("./data/user/images/user$userId.png");
       }else{
@@ -98,7 +100,7 @@ class UserController extends Controller
         if(!$request->input('gender')){
             return StatusCode::JsonResponse(400);
         }
-          $user=Auth::user();
+          $user=$this->getCurrentUser($request);
           if($user){
              $user->gender=$request->input('gender');
              if(!$user->save()){
@@ -116,7 +118,7 @@ class UserController extends Controller
          if(!$request->input('username')){
             return StatusCode::JsonResponse(400);
         }
-          $user=Auth::user();
+          $user=$this->getCurrentUser($request);
           if($user){
              $user->username=$request->input('username');
              if(!$user->save()){
@@ -132,7 +134,7 @@ class UserController extends Controller
           if(!$request->input('email')){
             return StatusCode::JsonResponse(400);
         }
-          $user=Auth::user();
+          $user=$this->getCurrentUser($request);
           if($user){
              $user->username=$request->input('email');
              //need to be verified 
@@ -144,4 +146,5 @@ class UserController extends Controller
                 return StatusCode::JsonResponse(404);
           }
     }
+    
 }
