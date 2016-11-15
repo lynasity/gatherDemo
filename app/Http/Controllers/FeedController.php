@@ -83,7 +83,7 @@ class FeedController extends Controller
 
     public function getCollections(Request $request){
       $user_id=$this->getCurrentUser($request)->id;
-      $contents=app('db')->select("SELECT id,title,description,organization,date FROM collections AS c INNER JOIN themefeeds AS t ON t.id=c.feed_id WHERE c.user_id=$user_id ORDER BY date DESC");
+      $contents=app('db')->select("SELECT t.id,title,description,organization,date FROM collections AS c INNER JOIN themefeeds AS t ON t.id=c.feed_id WHERE c.user_id=$user_id ORDER BY date DESC");
       if($contents){
             return StatusCode::JsonResponse(200,$contents);
         }else{

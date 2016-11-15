@@ -45,7 +45,7 @@ $app->post('feedback',['middleware'=>'authTokenV2','uses'=>'UserController@feedb
  * arg1:api_token
    arg2: the file you want to upload 
  */
-$app->get('user/uploadImage',['middleware'=>'authTokenV2','uses'=>'UserController@uploadImage']);
+$app->post('user/uploadImage',['middleware'=>'authTokenV2','uses'=>'UserController@uploadImage']);
 
 /**
    user/getUserImage

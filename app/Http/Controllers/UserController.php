@@ -59,7 +59,8 @@ class UserController extends Controller
      }
 
      public function feedback(request $request){
-          $feedback=UserFeedback::create(['username'=>Auth::user()->username,'feedback'=>$request->input('feedback')]);
+           $user=$this->getCurrentUser($request);
+          $feedback=UserFeedback::create(['username'=>$user->username,'feedback'=>$request->input('feedback')]);
           if($feedback){
             return StatusCode::JsonResponse(200);
           }else{
@@ -68,9 +69,10 @@ class UserController extends Controller
      }
 
     public function uploadImage(request $request){
+      $userId=$this->getCurrentUser($request)->id;
             if($request->hasFile('userImage')){
-              if($request->file('photo')->isValid()){
-                $fileName='user'.(Auth::user()->id).'png';
+              if($request->file('userImage')->isValid()){
+                $fileName='user'.$userId.'.png';
                   $request->file('userImage')->move('./data/user/images',$fileName);
                  return StatusCode::JsonResponse(200);
               }else{
