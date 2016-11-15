@@ -136,7 +136,7 @@ class UserController extends Controller
         }
           $user=$this->getCurrentUser($request);
           if($user){
-             $user->username=$request->input('email');
+             $user->email=$request->input('email');
              //need to be verified 
              if(!$user->save()){
                 return StatusCode::JsonResponse(500);

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Subscribe;
-// use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Collections;
 use App\ThemeFeeds;
@@ -83,7 +83,7 @@ class FeedController extends Controller
 
     public function getCollections(Request $request){
       $user_id=$this->getCurrentUser($request)->id;
-      $contents=app('db')->select("SELECT title,description,organization,date FROM collections AS c INNER JOIN themefeeds AS t ON t.id=c.feed_id WHERE c.user_id=$user_id ORDER BY date DESC");
+      $contents=app('db')->select("SELECT id,title,description,organization,date FROM collections AS c INNER JOIN themefeeds AS t ON t.id=c.feed_id WHERE c.user_id=$user_id ORDER BY date DESC");
       if($contents){
             return StatusCode::JsonResponse(200,$contents);
         }else{
@@ -108,11 +108,29 @@ class FeedController extends Controller
        $feeds = explode(",", $feeds);
        $user_id=$this->getCurrentUser($request)->id;
        foreach ($feeds as $feed) {
-          $collection=Collections::create(['user_id'=>$user_id,'feed_id'=>$feed]);
+        // if doesn't exists , create
+           $collection=Collections::firstOrCreate(['user_id'=>$user_id,'feed_id'=>$feed]);
            if(!$collection){
                   return StatusCode::JsonResponse(500);
-              }
+           }
        }
         return StatusCode::JsonResponse(200);     
     } 
+
+    public function synUnCollections(Request $request){
+        $feeds=$request->input('feeds');
+        $feeds = explode(",", $feeds);
+        $user_id=$this->getCurrentUser($request)->id;
+        //mysql transaction
+          DB::beginTransaction();
+          foreach ($feeds as $feed){
+             $res=DB::table('collections')->where('user_id',$user_id)->where('feed_id',$feed)->delete(); 
+             if(!$res){
+               DB::rollBack();
+               return StatusCode::JsonResponse(500);
+             }           
+          }
+          DB::commit();
+          return StatusCode::JsonResponse(200);      
+    }
 }

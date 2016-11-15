@@ -91,7 +91,12 @@ $app->post('theme/subscribe',['middleware'=>'authTokenV2','uses'=>'ThemeControll
    arg2:themes array of theme_id
  */
  $app->post('theme/synSubscribes',['middleware'=>'authTokenV2','uses'=>'ThemeController@synSubscribes']);
- 
+ /**
+   theme/synUnSubscribes
+   arg1:api_token
+   arg2:themes array of theme_id
+ */
+ $app->post('theme/synUnSubscribes',['middleware'=>'authTokenV2','uses'=>'ThemeController@synUnSubscribes']);
 /**
    theme/all
    arg1:api_token
@@ -128,6 +133,12 @@ $app->post('feed/collect',['middleware'=>'authTokenV2','uses'=>'FeedController@c
  */
 $app->post('feed/synCollections',['middleware'=>'authTokenV2','uses'=>'FeedController@synCollections']);
 
+/**
+   feed/synUnCollections
+ * arg1:api_token
+   arg2:feeds
+ */
+$app->post('feed/synUnCollections',['middleware'=>'authTokenV2','uses'=>'FeedController@synUnCollections']);
 /**
    feed/cancelCollect
  * arg1:api_token

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Subscribe;
 use App\Themes;
@@ -71,11 +72,29 @@ class ThemeController extends Controller
           $themes=$request->input('themes');
           $themes = explode(",", $themes);
           foreach ($themes as $theme) {
-              $subscribe=Subscribe::create(['user_id'=>$user_id,'theme_id'=>$request->input('theme_id')]);
+              $subscribe=Subscribe::firstOrCreate(['user_id'=>$user_id,'theme_id'=>$theme]);
               if(!$subscribe){
                   return StatusCode::JsonResponse(500);
               }
           }
            return StatusCode::JsonResponse(200);         
     }
+
+    public function synUnSubscribes(request $request){
+          $user_id=$this->getCurrentUser($request)->id;
+          $themes=$request->input('themes');
+          $themes = explode(",", $themes);
+          // mysql transaction
+          DB::beginTransaction();
+          foreach ($themes as $theme){
+             $res=DB::table('subscribes')->where('user_id',$user_id)->where('theme_id',$theme)->delete(); 
+             if(!$res){
+               DB::rollBack();
+               return StatusCode::JsonResponse(500);
+             }           
+          }
+          DB::commit();
+          return StatusCode::JsonResponse(200);      
+    }
 }
+
