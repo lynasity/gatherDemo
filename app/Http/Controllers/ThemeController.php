@@ -69,6 +69,7 @@ class ThemeController extends Controller
     public function synSubscribes(request $request){
           $user_id=$this->getCurrentUser($request)->id;
           $themes=$request->input('themes');
+          $themes = explode(",", $themes);
           foreach ($themes as $theme) {
               $subscribe=Subscribe::create(['user_id'=>$user_id,'theme_id'=>$request->input('theme_id')]);
               if(!$subscribe){

@@ -105,6 +105,7 @@ class FeedController extends Controller
 
     public function synCollections(Request $request){
        $feeds=$request->input('feeds');
+       $feeds = explode(",", $feeds);
        $user_id=$this->getCurrentUser($request)->id;
        foreach ($feeds as $feed) {
           $collection=Collections::create(['user_id'=>$user_id,'feed_id'=>$feed]);
